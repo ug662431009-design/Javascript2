@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Post</title>
+        <style>
+            @keyframes hide {
+                0% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 0;
+                }
+            }
+            .hide {
+                float: right;
+            }
+
+            .post {
+                background-color: blueviolet;
+                padding: 20px;
+                margin-bottom: 10px;
+                animation-name: hide;
+                animation-duration: 2s;
+                animation-fill-mode: forwards;
+                animation-play-state: paused;
+            }
+            
+            .body {
+                padding-bottom: 50px;
+            }
+        </style>
+        <script>
+
+            //start with first post 
+            let content = 1;
+
+            // Load posts 20 at a time
+            const quantity = 20;
+
+            //when DOM loads. render the first 20 posts
+            document.addEventListener('DOMContentLoaded', load);
+
+            window.onscroll = () => {
+                if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+                   load();
+                }
+            };
+
+            document.addEventListener('click', even => {
+                const elememt = event.target;
+            if (element.className === 'hide') {
+                elememt.parentElement.style.animationPlayState = 'running';
+                elememt.parentElement.addEventListener('animationend', () => {
+                    elememt.parentElement.remove();
+                });
+             }
+            });
+
+            // Load next set of posts
+            function load(){
+
+                // set start and end post numbers; and update counter
+                const start = counter;
+                const end = start + quantity - 1;
+                counter = end + 1;
+
+                // Get new posts and add posts
+                fetch(`/posts?start=${start}&end=${end}`)
+                .then(Response => Response.json())
+                .then(data => {
+                    data.posts.forEach(add_post);
+                })
+
+            };
+
+            //Add anew post with given contents to DOM
+            function add_post(coontents) {
+
+                //creat new post
+                const post = document.createElement('div');
+                post.className = 'post';
+                post.innerHTML = contents;
+
+                // Add post to DOM
+                document.querySelector('#posts').append(post);
+            };
+
+        </script>
+    </head>
+    <body>
+        <h1>Post#1</h1>
+        <h1>Post#2</h1>
+        <h1>Post#3</h1>
+        <h1>Post#4</h1>
+        <h1>Post#5</h1>
+        <h1>Post#6</h1>
+        <h1>Post#7</h1>
+        <h1>Post#8</h1>
+        <h1>Post#9</h1>
+        <h1>Post#10</h1>
+    </body>
+
+</html>
